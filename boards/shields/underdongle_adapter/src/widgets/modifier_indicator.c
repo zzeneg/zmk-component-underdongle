@@ -131,27 +131,27 @@ int zmk_widget_modifier_indicator_init(struct zmk_widget_modifier_indicator *wid
 
     widget->gui_label = lv_label_create(widget->obj);
     lv_label_set_text(widget->gui_label, "GUI");
-    lv_obj_set_style_text_font(widget->gui_label, &cascadia_fa_16, LV_PART_MAIN);
+    lv_obj_set_style_text_font(widget->gui_label, &cascadia_latin_ru_fa_14, LV_PART_MAIN);
     lv_obj_set_style_text_color(widget->gui_label, lv_color_hex(color_inactive), LV_PART_MAIN);
 
     widget->alt_label = lv_label_create(widget->obj);
     lv_label_set_text(widget->alt_label, "ALT");
-    lv_obj_set_style_text_font(widget->alt_label, &cascadia_fa_16, LV_PART_MAIN);
+    lv_obj_set_style_text_font(widget->alt_label, &cascadia_latin_ru_fa_14, LV_PART_MAIN);
     lv_obj_set_style_text_color(widget->alt_label, lv_color_hex(color_inactive), LV_PART_MAIN);
 
     widget->ctrl_label = lv_label_create(widget->obj);
     lv_label_set_text(widget->ctrl_label, "CTRL");
-    lv_obj_set_style_text_font(widget->ctrl_label, &cascadia_fa_16, LV_PART_MAIN);
+    lv_obj_set_style_text_font(widget->ctrl_label, &cascadia_latin_ru_fa_14, LV_PART_MAIN);
     lv_obj_set_style_text_color(widget->ctrl_label, lv_color_hex(color_inactive), LV_PART_MAIN);
 
     widget->shift_label = lv_label_create(widget->obj);
     lv_label_set_text(widget->shift_label, "SHFT");
-    lv_obj_set_style_text_font(widget->shift_label, &cascadia_fa_16, LV_PART_MAIN);
+    lv_obj_set_style_text_font(widget->shift_label, &cascadia_latin_ru_fa_14, LV_PART_MAIN);
     lv_obj_set_style_text_color(widget->shift_label, lv_color_hex(color_inactive), LV_PART_MAIN);
 
     widget->caps_label = lv_label_create(widget->obj);
     lv_label_set_text(widget->caps_label, "CAPS");
-    lv_obj_set_style_text_font(widget->caps_label, &cascadia_fa_16, LV_PART_MAIN);
+    lv_obj_set_style_text_font(widget->caps_label, &cascadia_latin_ru_fa_14, LV_PART_MAIN);
     lv_obj_set_style_text_color(widget->caps_label, lv_color_hex(color_inactive), LV_PART_MAIN);
 
     sys_slist_append(&widgets, &widget->node);

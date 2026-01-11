@@ -135,7 +135,7 @@ int zmk_widget_battery_init(struct zmk_widget_battery *widget, lv_obj_t *parent)
         // lv_obj_set_flex_grow(info_container, 1);
 
         lv_obj_t *num = lv_label_create(info_container);
-        lv_obj_set_style_text_font(num, &cascadia_fa_16, 0);
+        lv_obj_set_style_text_font(num, &cascadia_latin_ru_fa_14, 0);
         lv_obj_set_style_text_color(num, lv_color_white(), 0);
         lv_obj_set_style_opa(num, 255, 0);
         lv_obj_align(num, LV_ALIGN_CENTER, 0, 0);
