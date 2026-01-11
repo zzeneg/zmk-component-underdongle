@@ -1,0 +1,7 @@
+config UNDERDONGLE_SHOW_LAYOUT
+    bool "Show layout"
+    default y
+
+config UNDERDONGLE_LAYOUTS
+    string "Comma-separated layout list"
+    default "EN"
