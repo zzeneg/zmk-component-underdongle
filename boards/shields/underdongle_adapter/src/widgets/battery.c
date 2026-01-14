@@ -55,21 +55,21 @@ static void set_connection_status(lv_obj_t *widget_obj, struct connection_status
     }
 
     lv_obj_t *num = lv_obj_get_child(info_container, 0);
-    lv_obj_t *nc_num = lv_obj_get_child(info_container, 1);
-    if (!num || !nc_num) {
+    lv_obj_t *nc = lv_obj_get_child(info_container, 1);
+    if (!num || !nc) {
         return;
     }
 
     // Prevent animation stacking on rapid connection changes
     lv_anim_del(num, NULL);
-    lv_anim_del(nc_num, NULL);
+    lv_anim_del(nc, NULL);
 
     if (status.connected) {
-        lv_obj_fade_out(nc_num, 150, 0);
+        lv_obj_fade_out(nc, 150, 0);
         lv_obj_fade_in(num, 150, 250);
     } else {
         lv_obj_fade_out(num, 150, 0);
-        lv_obj_fade_in(nc_num, 150, 250);
+        lv_obj_fade_in(nc, 150, 250);
     }
 }
 
@@ -121,33 +121,31 @@ ZMK_SUBSCRIPTION(widget_connection_status, zmk_split_central_status_changed);
 
 int zmk_widget_battery_init(struct zmk_widget_battery *widget, lv_obj_t *parent) {
     widget->obj = lv_obj_create(parent);
-    // lv_obj_set_width(widget->obj, lv_pct(100));
-    // lv_obj_set_flex_flow(widget->obj, LV_FLEX_FLOW_ROW);
-    // lv_obj_set_flex_align(widget->obj, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    // lv_obj_set_style_pad_column(widget->obj, 12, LV_PART_MAIN);
-    // lv_obj_set_style_pad_bottom(widget->obj, 12, LV_PART_MAIN);
-    // lv_obj_set_style_pad_hor(widget->obj, 16, LV_PART_MAIN);
+    lv_obj_set_size(widget->obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    lv_obj_set_style_border_width(widget->obj, 0, LV_PART_MAIN);
+    lv_obj_set_style_pad_all(widget->obj, 0, LV_PART_MAIN);
+    lv_obj_set_flex_flow(widget->obj, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(widget->obj, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_column(widget->obj, 8, LV_PART_MAIN);
 
-        for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
+    for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
         lv_obj_t *info_container = lv_obj_create(widget->obj);
         lv_obj_center(info_container);
-        lv_obj_set_height(info_container, lv_pct(100));
-        // lv_obj_set_flex_grow(info_container, 1);
+        lv_obj_set_size(info_container, 60, 20);
 
         lv_obj_t *num = lv_label_create(info_container);
         lv_obj_set_style_text_font(num, &cascadia_latin_ru_fa_14, 0);
-        lv_obj_set_style_text_color(num, lv_color_white(), 0);
         lv_obj_set_style_opa(num, 255, 0);
-        lv_obj_align(num, LV_ALIGN_CENTER, 0, 0);
+        lv_obj_align(num, LV_ALIGN_RIGHT_MID, 0, 0);
         lv_label_set_text(num, "N/A");
 
         lv_obj_set_style_opa(num, 0, 0);
 
-        lv_obj_t *nc_num = lv_label_create(info_container);
-        lv_obj_set_style_text_color(nc_num, lv_color_hex(0xe63030), 0);
-        lv_obj_align(nc_num, LV_ALIGN_CENTER, 0, 0);
-        lv_label_set_text(nc_num, LV_SYMBOL_CLOSE);
-        lv_obj_set_style_opa(nc_num, 255, 0);
+        lv_obj_t *nc = lv_label_create(info_container);
+        lv_obj_set_style_text_color(nc, lv_color_hex(0xe63030), 0);
+        lv_obj_align(nc, LV_ALIGN_RIGHT_MID, 0, 0);
+        lv_label_set_text(nc, LV_SYMBOL_CLOSE);
+        lv_obj_set_style_opa(nc, 255, 0);
     }
 
     sys_slist_append(&widgets, &widget->node);

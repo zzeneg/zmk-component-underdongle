@@ -3,7 +3,7 @@
 #include <lvgl.h>
 #include <zephyr/kernel.h>
 
-struct zmk_widget_modifier_indicator {
+struct zmk_widget_modifiers {
     sys_snode_t node;
     lv_obj_t *obj;
     lv_obj_t *gui_label;
@@ -15,5 +15,5 @@ struct zmk_widget_modifier_indicator {
 #endif
 };
 
-int zmk_widget_modifier_indicator_init(struct zmk_widget_modifier_indicator *widget, lv_obj_t *parent);
-lv_obj_t *zmk_widget_modifier_indicator_obj(struct zmk_widget_modifier_indicator *widget);
+int zmk_widget_modifiers_init(struct zmk_widget_modifiers *widget, lv_obj_t *parent);
+lv_obj_t *zmk_widget_modifiers_obj(struct zmk_widget_modifiers *widget);

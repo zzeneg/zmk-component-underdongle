@@ -1,4 +1,4 @@
-#include "modifier_indicator.h"
+#include "modifiers.h"
 
 #include <zmk/display.h>
 #ifdef CONFIG_DT_HAS_ZMK_BEHAVIOR_CAPS_WORD_ENABLED
@@ -45,7 +45,7 @@ static void set_modifier_color(lv_obj_t *label, bool active) {
 }
 
 static void modifier_update_cb(struct modifier_state state) {
-    struct zmk_widget_modifier_indicator *widget;
+    struct zmk_widget_modifiers *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
         set_modifier_color(widget->gui_label, state.gui);
         set_modifier_color(widget->alt_label, state.alt);
@@ -104,25 +104,24 @@ static int keycode_state_changed_listener(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_BUBBLE;
 }
 
-ZMK_LISTENER(widget_modifier_indicator_mod, keycode_state_changed_listener);
-ZMK_SUBSCRIPTION(widget_modifier_indicator_mod, zmk_keycode_state_changed);
+ZMK_LISTENER(widget_modifiers_mod, keycode_state_changed_listener);
+ZMK_SUBSCRIPTION(widget_modifiers_mod, zmk_keycode_state_changed);
 
 #ifdef CONFIG_DT_HAS_ZMK_BEHAVIOR_CAPS_WORD_ENABLED
-static struct modifier_state modifier_indicator_get_state(const zmk_event_t *eh) {
+static struct modifier_state modifiers_get_caps_state(const zmk_event_t *eh) {
     const struct zmk_caps_word_state_changed *ev = as_zmk_caps_word_state_changed(eh);
     LOG_INF("DISP | Caps Word State Changed: %d", ev->active);
     current_state.caps_word = ev->active;
     return current_state;
 }
 
-ZMK_DISPLAY_WIDGET_LISTENER(widget_modifier_indicator, struct modifier_state, modifier_update_cb, modifier_indicator_get_state)
-ZMK_SUBSCRIPTION(widget_modifier_indicator, zmk_caps_word_state_changed);
+ZMK_DISPLAY_WIDGET_LISTENER(widget_modifiers, struct modifier_state, modifier_update_cb, modifiers_get_caps_state)
+ZMK_SUBSCRIPTION(widget_modifiers, zmk_caps_word_state_changed);
 #endif
 
-int zmk_widget_modifier_indicator_init(struct zmk_widget_modifier_indicator *widget, lv_obj_t *parent) {
+int zmk_widget_modifiers_init(struct zmk_widget_modifiers *widget, lv_obj_t *parent) {
     widget->obj = lv_obj_create(parent);
     lv_obj_set_size(widget->obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-    // lv_obj_set_style_bg_opa(widget->obj, 0, LV_PART_MAIN);
     lv_obj_set_style_border_width(widget->obj, 0, LV_PART_MAIN);
     lv_obj_set_style_pad_all(widget->obj, 0, LV_PART_MAIN);
     lv_obj_set_flex_flow(widget->obj, LV_FLEX_FLOW_ROW);
@@ -167,11 +166,11 @@ int zmk_widget_modifier_indicator_init(struct zmk_widget_modifier_indicator *wid
     modifier_update_cb(current_state);
 
 #ifdef CONFIG_DT_HAS_ZMK_BEHAVIOR_CAPS_WORD_ENABLED
-    widget_modifier_indicator_init();
+    widget_modifiers_init();
 #endif
     return 0;
 }
 
-lv_obj_t *zmk_widget_modifier_indicator_obj(struct zmk_widget_modifier_indicator *widget) {
+lv_obj_t *zmk_widget_modifiers_obj(struct zmk_widget_modifiers *widget) {
     return widget->obj;
 }
