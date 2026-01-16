@@ -20,7 +20,7 @@ static void volume_update_cb(struct volume_notification volume) {
     struct zmk_widget_volume *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
         char value[10] = {};
-        sprintf(value, LV_SYMBOL_VOLUME_MAX" %i%%", volume.value);
+        sprintf(value, LV_SYMBOL_VOLUME_MAX " %i%%", volume.value);
         lv_label_set_text(widget->obj, value);
     }
 }

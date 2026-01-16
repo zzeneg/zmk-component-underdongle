@@ -4,7 +4,7 @@ config ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
     default y
 
 config ZMK_DISPLAY
-   default y
+    default y
 
 choice ZMK_DISPLAY_STATUS_SCREEN
     default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
@@ -47,10 +47,6 @@ endchoice
 
 config LV_COLOR_16_SWAP
 	default y
-
-choice LV_FONT_DEFAULT
-    default LV_FONT_DEFAULT_MONTSERRAT_20
-endchoice
 
 config PWM
     default y

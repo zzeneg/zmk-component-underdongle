@@ -21,7 +21,8 @@ struct connection_status {
     bool connected;
 };
 
-static void set_battery_state(lv_obj_t *widget_obj, struct battery_state state, bool is_initialized) {
+static void set_battery_state(lv_obj_t *widget_obj, struct battery_state state,
+                              bool is_initialized) {
     if (!is_initialized || state.source >= ZMK_SPLIT_BLE_PERIPHERAL_COUNT) {
         return;
     }
@@ -44,7 +45,8 @@ static void set_battery_state(lv_obj_t *widget_obj, struct battery_state state, 
     }
 }
 
-static void set_connection_status(lv_obj_t *widget_obj, struct connection_status status, bool is_initialized) {
+static void set_connection_status(lv_obj_t *widget_obj, struct connection_status status,
+                                  bool is_initialized) {
     if (!is_initialized || status.source >= ZMK_SPLIT_BLE_PERIPHERAL_COUNT) {
         return;
     }
@@ -85,12 +87,13 @@ static struct battery_state get_battery_state(const zmk_event_t *eh) {
         return (struct battery_state){.source = 0, .level = 0};
     }
 
-    const struct zmk_peripheral_battery_state_changed *bat_ev = as_zmk_peripheral_battery_state_changed(eh);
+    const struct zmk_peripheral_battery_state_changed *bat_ev =
+        as_zmk_peripheral_battery_state_changed(eh);
     if (bat_ev == NULL) {
         return (struct battery_state){.source = 0, .level = 0};
     }
 
-    return (struct battery_state){.source = bat_ev->source,.level = bat_ev->state_of_charge};
+    return (struct battery_state){.source = bat_ev->source, .level = bat_ev->state_of_charge};
 }
 
 void connection_status_update_cb(struct connection_status status) {
@@ -105,7 +108,8 @@ static struct connection_status get_connection_status(const zmk_event_t *eh) {
         return (struct connection_status){.source = 0, .connected = false};
     }
 
-    const struct zmk_split_central_status_changed *conn_ev = as_zmk_split_central_status_changed(eh);
+    const struct zmk_split_central_status_changed *conn_ev =
+        as_zmk_split_central_status_changed(eh);
     if (conn_ev == NULL) {
         return (struct connection_status){.source = 0, .connected = false};
     }
@@ -113,10 +117,12 @@ static struct connection_status get_connection_status(const zmk_event_t *eh) {
     return (struct connection_status){.source = conn_ev->slot, .connected = conn_ev->connected};
 }
 
-ZMK_DISPLAY_WIDGET_LISTENER(widget_battery_state, struct battery_state, battery_state_update_cb, get_battery_state);
+ZMK_DISPLAY_WIDGET_LISTENER(widget_battery_state, struct battery_state, battery_state_update_cb,
+                            get_battery_state);
 ZMK_SUBSCRIPTION(widget_battery_state, zmk_peripheral_battery_state_changed);
 
-ZMK_DISPLAY_WIDGET_LISTENER(widget_connection_status, struct connection_status, connection_status_update_cb, get_connection_status);
+ZMK_DISPLAY_WIDGET_LISTENER(widget_connection_status, struct connection_status,
+                            connection_status_update_cb, get_connection_status);
 ZMK_SUBSCRIPTION(widget_connection_status, zmk_split_central_status_changed);
 
 int zmk_widget_battery_init(struct zmk_widget_battery *widget, lv_obj_t *parent) {
@@ -125,7 +131,8 @@ int zmk_widget_battery_init(struct zmk_widget_battery *widget, lv_obj_t *parent)
     lv_obj_set_style_border_width(widget->obj, 0, LV_PART_MAIN);
     lv_obj_set_style_pad_all(widget->obj, 0, LV_PART_MAIN);
     lv_obj_set_flex_flow(widget->obj, LV_FLEX_FLOW_ROW);
-    lv_obj_set_flex_align(widget->obj, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_flex_align(widget->obj, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER);
     lv_obj_set_style_pad_column(widget->obj, 8, LV_PART_MAIN);
 
     for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
@@ -142,6 +149,7 @@ int zmk_widget_battery_init(struct zmk_widget_battery *widget, lv_obj_t *parent)
         lv_obj_set_style_opa(num, 0, 0);
 
         lv_obj_t *nc = lv_label_create(info_container);
+        lv_obj_set_style_text_font(num, &cascadia_latin_ru_fa_14, 0);
         lv_obj_set_style_text_color(nc, lv_color_hex(0xe63030), 0);
         lv_obj_align(nc, LV_ALIGN_RIGHT_MID, 0, 0);
         lv_label_set_text(nc, LV_SYMBOL_CLOSE);
@@ -149,7 +157,7 @@ int zmk_widget_battery_init(struct zmk_widget_battery *widget, lv_obj_t *parent)
     }
 
     sys_slist_append(&widgets, &widget->node);
-    
+
     widget->initialized = true;
     widget_connection_status_init();
     widget_battery_state_init();

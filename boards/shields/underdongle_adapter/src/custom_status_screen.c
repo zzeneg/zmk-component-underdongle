@@ -28,7 +28,7 @@ lv_obj_t *zmk_display_status_screen() {
 
     zmk_widget_layer_init(&layer_widget, screen);
     lv_obj_align(zmk_widget_layer_obj(&layer_widget), LV_ALIGN_BOTTOM_RIGHT, 0, 0);
-    
+
     zmk_widget_battery_init(&battery_widget, screen);
     lv_obj_align(zmk_widget_battery_obj(&battery_widget), LV_ALIGN_TOP_RIGHT, 0, 0);
 
