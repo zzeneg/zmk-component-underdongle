@@ -13,15 +13,14 @@ static struct time_notification get_time(const zmk_event_t *eh) {
     if (notification) {
         return *notification;
     }
+
     return (struct time_notification){.hour = 0, .minute = 0};
 }
 
 static void time_update_cb(struct time_notification time) {
     struct zmk_widget_time *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
-        char value[10] = {};
-        sprintf(value, "%02i:%02i", time.hour, time.minute);
-        lv_label_set_text(widget->obj, value);
+        lv_label_set_text_fmt(widget->obj, "%02i:%02i", time.hour, time.minute);
     }
 }
 

@@ -1,9 +1,6 @@
 #include "modifiers.h"
 
 #include <zmk/display.h>
-#ifdef CONFIG_DT_HAS_ZMK_BEHAVIOR_CAPS_WORD_ENABLED
-#include <zmk/events/caps_word_state_changed.h>
-#endif
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/event_manager.h>
 #include <zmk/hid.h>
@@ -17,7 +14,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
-static uint32_t color_inactive = 0x333333;
+static uint32_t color_inactive = 0x444444;
 static uint32_t color_active = 0xfcba03;
 
 struct modifier_state {
@@ -25,7 +22,6 @@ struct modifier_state {
     bool alt;
     bool ctrl;
     bool shift;
-    bool caps_word;
 };
 
 static struct modifier_state current_state = {
@@ -33,7 +29,6 @@ static struct modifier_state current_state = {
     .alt = false,
     .ctrl = false,
     .shift = false,
-    .caps_word = false,
 };
 
 static void set_modifier_color(lv_obj_t *label, bool active) {
@@ -51,9 +46,6 @@ static void modifier_update_cb(struct modifier_state state) {
         set_modifier_color(widget->alt_label, state.alt);
         set_modifier_color(widget->ctrl_label, state.ctrl);
         set_modifier_color(widget->shift_label, state.shift);
-#ifdef CONFIG_DT_HAS_ZMK_BEHAVIOR_CAPS_WORD_ENABLED
-        set_modifier_color(widget->caps_label, state.caps_word);
-#endif
     }
 }
 
@@ -61,34 +53,34 @@ static void update_modifier_state(uint8_t keycode, bool pressed) {
     bool changed = false;
 
     switch (keycode) {
-        case HID_USAGE_KEY_KEYBOARD_LEFTSHIFT:
-        case HID_USAGE_KEY_KEYBOARD_RIGHTSHIFT:
-            if (current_state.shift != pressed) {
-                current_state.shift = pressed;
-                changed = true;
-            }
-            break;
-        case HID_USAGE_KEY_KEYBOARD_LEFTCONTROL:
-        case HID_USAGE_KEY_KEYBOARD_RIGHTCONTROL:
-            if (current_state.ctrl != pressed) {
-                current_state.ctrl = pressed;
-                changed = true;
-            }
-            break;
-        case HID_USAGE_KEY_KEYBOARD_LEFTALT:
-        case HID_USAGE_KEY_KEYBOARD_RIGHTALT:
-            if (current_state.alt != pressed) {
-                current_state.alt = pressed;
-                changed = true;
-            }
-            break;
-        case HID_USAGE_KEY_KEYBOARD_LEFT_GUI:
-        case HID_USAGE_KEY_KEYBOARD_RIGHT_GUI:
-            if (current_state.gui != pressed) {
-                current_state.gui = pressed;
-                changed = true;
-            }
-            break;
+    case HID_USAGE_KEY_KEYBOARD_LEFTSHIFT:
+    case HID_USAGE_KEY_KEYBOARD_RIGHTSHIFT:
+        if (current_state.shift != pressed) {
+            current_state.shift = pressed;
+            changed = true;
+        }
+        break;
+    case HID_USAGE_KEY_KEYBOARD_LEFTCONTROL:
+    case HID_USAGE_KEY_KEYBOARD_RIGHTCONTROL:
+        if (current_state.ctrl != pressed) {
+            current_state.ctrl = pressed;
+            changed = true;
+        }
+        break;
+    case HID_USAGE_KEY_KEYBOARD_LEFTALT:
+    case HID_USAGE_KEY_KEYBOARD_RIGHTALT:
+        if (current_state.alt != pressed) {
+            current_state.alt = pressed;
+            changed = true;
+        }
+        break;
+    case HID_USAGE_KEY_KEYBOARD_LEFT_GUI:
+    case HID_USAGE_KEY_KEYBOARD_RIGHT_GUI:
+        if (current_state.gui != pressed) {
+            current_state.gui = pressed;
+            changed = true;
+        }
+        break;
     }
 
     if (changed) {
@@ -104,20 +96,11 @@ static int keycode_state_changed_listener(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_BUBBLE;
 }
 
-ZMK_LISTENER(widget_modifiers_mod, keycode_state_changed_listener);
-ZMK_SUBSCRIPTION(widget_modifiers_mod, zmk_keycode_state_changed);
+ZMK_LISTENER(widget_modifiers, keycode_state_changed_listener);
+ZMK_SUBSCRIPTION(widget_modifiers, zmk_keycode_state_changed);
 
-#ifdef CONFIG_DT_HAS_ZMK_BEHAVIOR_CAPS_WORD_ENABLED
-static struct modifier_state modifiers_get_caps_state(const zmk_event_t *eh) {
-    const struct zmk_caps_word_state_changed *ev = as_zmk_caps_word_state_changed(eh);
-    LOG_INF("DISP | Caps Word State Changed: %d", ev->active);
-    current_state.caps_word = ev->active;
-    return current_state;
-}
-
-ZMK_DISPLAY_WIDGET_LISTENER(widget_modifiers, struct modifier_state, modifier_update_cb, modifiers_get_caps_state)
-ZMK_SUBSCRIPTION(widget_modifiers, zmk_caps_word_state_changed);
-#endif
+// ZMK_DISPLAY_WIDGET_LISTENER(widget_modifiers, struct modifier_state, modifier_update_cb,
+//                             modifiers_get_caps_state)
 
 int zmk_widget_modifiers_init(struct zmk_widget_modifiers *widget, lv_obj_t *parent) {
     widget->obj = lv_obj_create(parent);
@@ -125,7 +108,8 @@ int zmk_widget_modifiers_init(struct zmk_widget_modifiers *widget, lv_obj_t *par
     lv_obj_set_style_border_width(widget->obj, 0, LV_PART_MAIN);
     lv_obj_set_style_pad_all(widget->obj, 0, LV_PART_MAIN);
     lv_obj_set_flex_flow(widget->obj, LV_FLEX_FLOW_ROW);
-    lv_obj_set_flex_align(widget->obj, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_flex_align(widget->obj, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER);
     lv_obj_set_style_pad_column(widget->obj, 4, LV_PART_MAIN);
 
     widget->gui_label = lv_label_create(widget->obj);
@@ -148,11 +132,6 @@ int zmk_widget_modifiers_init(struct zmk_widget_modifiers *widget, lv_obj_t *par
     lv_obj_set_style_text_font(widget->shift_label, &cascadia_latin_ru_fa_14, LV_PART_MAIN);
     lv_obj_set_style_text_color(widget->shift_label, lv_color_hex(color_inactive), LV_PART_MAIN);
 
-    widget->caps_label = lv_label_create(widget->obj);
-    lv_label_set_text(widget->caps_label, "CAPS");
-    lv_obj_set_style_text_font(widget->caps_label, &cascadia_latin_ru_fa_14, LV_PART_MAIN);
-    lv_obj_set_style_text_color(widget->caps_label, lv_color_hex(color_inactive), LV_PART_MAIN);
-
     sys_slist_append(&widgets, &widget->node);
 
     // Initialize modifier state from current HID state
@@ -164,13 +143,7 @@ int zmk_widget_modifiers_init(struct zmk_widget_modifiers *widget, lv_obj_t *par
 
     // Apply initial state to display
     modifier_update_cb(current_state);
-
-#ifdef CONFIG_DT_HAS_ZMK_BEHAVIOR_CAPS_WORD_ENABLED
-    widget_modifiers_init();
-#endif
     return 0;
 }
 
-lv_obj_t *zmk_widget_modifiers_obj(struct zmk_widget_modifiers *widget) {
-    return widget->obj;
-}
+lv_obj_t *zmk_widget_modifiers_obj(struct zmk_widget_modifiers *widget) { return widget->obj; }

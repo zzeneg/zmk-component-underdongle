@@ -10,9 +10,6 @@ struct zmk_widget_modifiers {
     lv_obj_t *alt_label;
     lv_obj_t *ctrl_label;
     lv_obj_t *shift_label;
-#ifdef CONFIG_DT_HAS_ZMK_BEHAVIOR_CAPS_WORD_ENABLED
-    lv_obj_t *caps_label;
-#endif
 };
 
 int zmk_widget_modifiers_init(struct zmk_widget_modifiers *widget, lv_obj_t *parent);

@@ -23,12 +23,10 @@ struct volume_notification {
 
 ZMK_EVENT_DECLARE(volume_notification);
 
-#ifdef CONFIG_UNDERDONGLE_SHOW_LAYOUT
 struct layout_notification {
     uint8_t value;
 };
 
 ZMK_EVENT_DECLARE(layout_notification);
-#endif
 
 #endif

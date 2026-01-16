@@ -9,9 +9,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 ZMK_EVENT_IMPL(is_connected_notification);
 ZMK_EVENT_IMPL(time_notification);
 ZMK_EVENT_IMPL(volume_notification);
-#ifdef CONFIG_UNDERDONGLE_SHOW_LAYOUT
 ZMK_EVENT_IMPL(layout_notification);
-#endif
 
 typedef enum {
     _TIME = 0xAA, // random value, must match companion app
@@ -71,11 +69,9 @@ static void process_raw_hid_data(uint8_t *data) {
 
         break;
 
-#ifdef CONFIG_UNDERDONGLE_SHOW_LAYOUT
     case _LAYOUT:
         raise_layout_notification((struct layout_notification){.value = data[1]});
         break;
-#endif
     }
 }
 

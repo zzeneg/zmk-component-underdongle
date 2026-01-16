@@ -10,6 +10,8 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#define LV_SYMBOL_LAYER "\xEF\x97\xBD" /*62973, 0xF5FD*/
+
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
 struct layer_state {
@@ -20,9 +22,7 @@ static void layer_update_cb(struct layer_state state) {
     struct zmk_widget_layer *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
         const char *layer_name = zmk_keymap_layer_name(zmk_keymap_layer_index_to_id(state.index));
-        char value[10] = {};
-        sprintf(value, "%s", layer_name);
-        lv_label_set_text(widget->obj, value);
+        lv_label_set_text_fmt(widget->obj, "%s " LV_SYMBOL_LAYER, layer_name);
     }
 }
 
@@ -49,6 +49,4 @@ int zmk_widget_layer_init(struct zmk_widget_layer *widget, lv_obj_t *parent) {
     return 0;
 }
 
-lv_obj_t *zmk_widget_layer_obj(struct zmk_widget_layer *widget) {
-    return widget->obj;
-}
+lv_obj_t *zmk_widget_layer_obj(struct zmk_widget_layer *widget) { return widget->obj; }

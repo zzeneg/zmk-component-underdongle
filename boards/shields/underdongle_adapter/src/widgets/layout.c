@@ -6,6 +6,8 @@
 #include <hid.h>
 #include <fonts.h>
 
+#define LV_SYMBOL_LANG "\xEF\x84\x9C" /*61724, 0xF11C*/
+
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
 static struct layout_notification get_layout(const zmk_event_t *eh) {
@@ -13,14 +15,13 @@ static struct layout_notification get_layout(const zmk_event_t *eh) {
     if (notification) {
         return *notification;
     }
+
     return (struct layout_notification){.value = 0};
 }
 
 static void layout_update_cb(struct layout_notification layout) {
     struct zmk_widget_layout *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
-        char label[10] = {};
-// #ifdef CONFIG_NICE_VIEW_HID_SHOW_LAYOUT
         char layouts[sizeof(CONFIG_UNDERDONGLE_LAYOUTS)];
         strcpy(layouts, CONFIG_UNDERDONGLE_LAYOUTS);
         char *current_layout = strtok(layouts, ",");
@@ -31,13 +32,10 @@ static void layout_update_cb(struct layout_notification layout) {
         }
 
         if (current_layout != NULL) {
-            sprintf(label, "%s", current_layout);
+            lv_label_set_text_fmt(widget->obj, LV_SYMBOL_LANG " %s", current_layout);
         } else {
-            sprintf(label, "%i", layout.value);
+            lv_label_set_text_fmt(widget->obj, LV_SYMBOL_LANG " %i", layout.value);
         }
-
-// #endif
-        lv_label_set_text(widget->obj, label);
     }
 }
 

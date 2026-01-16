@@ -36,12 +36,19 @@ static void set_battery_state(lv_obj_t *widget_obj, struct battery_state state,
     if (!num) {
         return;
     }
-    lv_label_set_text_fmt(num, LV_SYMBOL_BATTERY_FULL " %d%%", state.level);
 
-    if (state.level < 20) {
-        lv_obj_set_style_text_color(num, lv_color_hex(0xFFB802), 0);
+    lv_obj_set_style_text_color(num, lv_color_white(), 0);
+    if (state.level > 90) {
+        lv_label_set_text_fmt(num, "%d%% " LV_SYMBOL_BATTERY_FULL, state.level);
+    } else if (state.level > 60) {
+        lv_label_set_text_fmt(num, "%d%% " LV_SYMBOL_BATTERY_3, state.level);
+    } else if (state.level > 40) {
+        lv_label_set_text_fmt(num, "%d%% " LV_SYMBOL_BATTERY_2, state.level);
+    } else if (state.level > 10) {
+        lv_label_set_text_fmt(num, "%d%% " LV_SYMBOL_BATTERY_1, state.level);
     } else {
-        lv_obj_set_style_text_color(num, lv_color_hex(0xFFFFFF), 0);
+        lv_label_set_text_fmt(num, "%d%% " LV_SYMBOL_BATTERY_EMPTY, state.level);
+        lv_obj_set_style_text_color(num, lv_color_hex(0xFFB802), 0);
     }
 }
 
@@ -149,7 +156,7 @@ int zmk_widget_battery_init(struct zmk_widget_battery *widget, lv_obj_t *parent)
         lv_obj_set_style_opa(num, 0, 0);
 
         lv_obj_t *nc = lv_label_create(info_container);
-        lv_obj_set_style_text_font(num, &cascadia_latin_ru_fa_14, 0);
+        lv_obj_set_style_text_font(nc, &cascadia_latin_ru_fa_14, 0);
         lv_obj_set_style_text_color(nc, lv_color_hex(0xe63030), 0);
         lv_obj_align(nc, LV_ALIGN_RIGHT_MID, 0, 0);
         lv_label_set_text(nc, LV_SYMBOL_CLOSE);

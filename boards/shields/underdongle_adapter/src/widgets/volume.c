@@ -19,9 +19,13 @@ static struct volume_notification get_volume(const zmk_event_t *eh) {
 static void volume_update_cb(struct volume_notification volume) {
     struct zmk_widget_volume *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
-        char value[10] = {};
-        sprintf(value, LV_SYMBOL_VOLUME_MAX " %i%%", volume.value);
-        lv_label_set_text(widget->obj, value);
+        if (volume.value == 100) {
+            lv_label_set_text_fmt(widget->obj, LV_SYMBOL_VOLUME_MAX " %i%%", volume.value);
+        } else if (volume.value == 0) {
+            lv_label_set_text_fmt(widget->obj, LV_SYMBOL_MUTE " %i%%", volume.value);
+        } else {
+            lv_label_set_text_fmt(widget->obj, LV_SYMBOL_VOLUME_MID " %i%%", volume.value);
+        }
     }
 }
 
