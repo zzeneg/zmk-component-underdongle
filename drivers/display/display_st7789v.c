@@ -346,7 +346,7 @@ static void st7789v_lcd_init(const struct device *dev)
 	tmp = config->gamma;
 	st7789v_transmit(dev, ST7789V_CMD_GAMSET, &tmp, 1);
 
-	st7789v_transmit(dev, ST7789V_CMD_INV_ON, NULL, 0);
+	st7789v_transmit(dev, ST7789V_CMD_INV_OFF, NULL, 0);
 
 	st7789v_transmit(dev, ST7789V_CMD_PVGAMCTRL, (uint8_t *)config->pvgam_param,
 			 sizeof(config->pvgam_param));
